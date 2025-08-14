@@ -1,0 +1,14 @@
+rag:
+  chunk_chars: 1200
+  chunk_overlap: 150
+  top_k_dense: 12
+  top_k_bm25: 12
+  rerank_top_n: 50
+  final_k: 6
+  max_context_chars: 10000
+  use_mmr: true
+  mmr_lambda: 0.6
+agents:
+  max_papers: 6
+  per_paper_chunks: 12
+  retries: 2
