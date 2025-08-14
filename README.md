@@ -32,6 +32,7 @@ A production-style implementation that satisfies both **Test A (FastAPI + RAG)**
 - [Security Considerations](#security-considerations)
 - [Design Decisions & Trade‑offs](#design-decisions--trade-offs)
 - [Submission Checklist](#submission-checklist)
+- [Mermaid Troubleshooting](#mermaid-troubleshooting)
 
 ---
 
@@ -128,16 +129,17 @@ A customer‑support chatbot that answers **only** from your knowledge base usin
 ### Architecture
 ```mermaid
 flowchart LR
-U[User] --> API[/FastAPI/]
+U[User] --> API[FastAPI]
 API --> RET[Retriever]
-RET --> DENSE[Chroma (dense ANN)]
+RET --> DENSE[Chroma dense ANN]
 RET --> SPARSE[BM25]
-DENSE & SPARSE --> FUSE[Reciprocal Rank Fusion]
-FUSE --> RERANK[Cross‑Encoder]
+DENSE --> FUSE[Reciprocal Rank Fusion]
+SPARSE --> FUSE
+FUSE --> RERANK[Cross-Encoder]
 RERANK --> COMP[Context Compression]
 COMP --> LLM[Chat Completion]
 LLM --> API
-API --> DB[(SQLite: users/sessions/history)]
+API --> DB[(SQLite users/sessions/history)]
 ```
 
 ### Data Ingestion
@@ -184,13 +186,14 @@ A LangGraph‑orchestrated multi‑agent system to analyze academic papers and g
 ### Workflow & Orchestration
 ```mermaid
 flowchart LR
-Q[Question] --> R(Research)
-R --> S(Summarize)
-S --> C(Critic)
-C --> W(Writer)
+Q[Question] --> R[Research]
+R --> S[Summarize]
+S --> C[Critic]
+C --> W[Writer]
 W --> O[Report]
-R -->|chunks| V[(Chroma Vector Store)]
+R --> V[(Chroma Vector Store)]
 ```
+
 The graph is compiled with **LangGraph** and run asynchronously.
 
 ### Run the Research Endpoint
@@ -262,3 +265,13 @@ pytest -q
 - [ ] Ingestion process documented and working (Chroma persistence)
 - [ ] Retrieval metrics demonstrated (Recall@K, MRR@K)
 - [ ] Notes on architecture, performance, and security trade‑offs
+
+---
+
+## Mermaid Troubleshooting
+- Ensure there is a **blank line before** the ```mermaid code fence.
+- Put **each edge on its own line** or separate with semicolons (`;`). Avoid chaining like `A --> B C --> D` on the same line.
+- Avoid combining sources with `&` (e.g., `A & B --> C`); instead, declare two lines: `A --> C` and `B --> C`.
+- Prefer plain ASCII in labels (e.g., `Cross-Encoder` instead of a Unicode hyphen).
+- If rendering still fails, try simplifying labels (e.g., remove parentheses and punctuation inside `[]`).
+
